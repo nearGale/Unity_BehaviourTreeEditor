@@ -1,5 +1,7 @@
+using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 /// <summary>
@@ -12,6 +14,55 @@ public class CompositeNode : BTreeNode
 
     public override void Shortcut()
     {
+        SortChildrenNodes();
+
+        base.Shortcut();
+
+        var bTreeGraph = graph as BTreeGraph;
+        var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
+        var connections = childrenPort.GetConnections();
+
+        foreach (var connection in connections)
+        {
+            (connection.node as BTreeNode).Shortcut();
+        }
+    }
+
+    public override void GetJsonData(ref JsonData jsonData)
+    {
+        base.GetJsonData(ref jsonData);
+
+        SortChildrenNodes();
+
+        var bTreeGraph = graph as BTreeGraph;
+        var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
+        var connections = childrenPort.GetConnections();
+
+        // 填入自身Json
+        var strChildren = "";
+        for (int i = 0; i < connections.Count; i++)
+        {
+            strChildren += connections[i].node.name;
+            if (i != connections.Count - 1)
+            {
+                strChildren += ", ";
+            }
+        }
+        jsonData[name] = new JsonData(); // name 作为唯一key
+        jsonData[name]["type"] = this.GetType().Name;
+        jsonData[name]["children"] = new JsonData();
+        jsonData[name]["children"] = strChildren;
+
+        // 填入子节点Json
+        foreach (var connection in connections)
+        {
+            (connection.node as BTreeNode).GetJsonData(ref jsonData);
+        }
+    }
+
+    // 根据坐标重新排子节点的顺序
+    private void SortChildrenNodes()
+    {
         var bTreeGraph = graph as BTreeGraph;
         var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
 
@@ -20,12 +71,5 @@ public class CompositeNode : BTreeNode
         {
             return x.node.position.y.CompareTo(y.node.position.y);
         });
-
-        base.Shortcut();
-
-        foreach (var connection in connections)
-        {
-            (connection.node as BTreeNode).Shortcut();
-        }
     }
 }

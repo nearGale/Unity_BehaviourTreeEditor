@@ -1,4 +1,9 @@
+using LitJson;
+using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
 using XNode;
@@ -43,5 +48,39 @@ public class BTreeGraph : NodeGraph
         Debug.Log(root.name);
 
         root.Shortcut();
+    }
+
+    [ContextMenu("GetJsonString")]
+    private string GetJsonString()
+    {
+        JsonData jsonData = new JsonData();
+        var root = GetRootNode();
+        root.GetJsonData(ref jsonData);
+
+
+        var jsonStr = jsonData.ToJson();
+
+        // 将中文的unicode转成能识别的GBK编码
+        Regex reg = new Regex(@"(?i)\\[uU]([0-9a-f]{4})");
+        jsonStr = reg.Replace(jsonStr, delegate (Match m) { return ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString(); });
+
+        Debug.Log(jsonStr);
+        return jsonStr;
+    }
+
+    [ContextMenu("WriteJson")]
+    private void WriteJson()
+    {
+        string JsonPath = Application.dataPath + "/userInfo.json";
+
+        var data = GetJsonString();
+        WriteDataToJson(data, JsonPath);
+
+        AssetDatabase.Refresh();
+    }
+
+    private void WriteDataToJson(string data, string jsonPath)
+    {
+        System.IO.File.WriteAllText(jsonPath, data);
     }
 }

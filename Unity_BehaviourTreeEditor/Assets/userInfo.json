@@ -1,0 +1,27 @@
+
+{
+    "根节点" : {
+        "type" : "RootNode",
+        "children" : "selA, Sequence"
+    },
+    "selA" : {
+        "type" : "SelectorNode",
+        "children" : "考虑进来, Condition"
+    },
+    "考虑进来" : {
+        "type" : "ActionLog",
+        "param" : "考虑考虑"
+    },
+    "Condition" : {
+        "type" : "ConditionFalse",
+        "param" : ""
+    },
+    "Sequence"  : {
+        "type" : "SequenceNode",
+        "children" : "Action, Condition"
+    },
+    "Action"    : {
+        "type" : "ActionWait",
+        "param" : "10"
+    }
+}

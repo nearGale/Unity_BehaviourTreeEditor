@@ -1,3 +1,4 @@
+using LitJson;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,5 +14,14 @@ public class LeafNode : BTreeNode
     public override void Shortcut()
     {
         Debug.Log($"{this.GetType().Name} {type}");
+    }
+
+    public override void GetJsonData(ref JsonData jsonData)
+    {
+        base.GetJsonData(ref jsonData);
+
+        jsonData[name] = new JsonData(); // name 作为唯一key
+        jsonData[name]["type"] = type.ToString();
+        jsonData[name]["param"] = param;
     }
 }
