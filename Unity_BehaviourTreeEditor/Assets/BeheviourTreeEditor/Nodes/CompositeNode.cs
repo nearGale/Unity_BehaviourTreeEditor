@@ -28,7 +28,7 @@ public class CompositeNode : BTreeNode
         }
     }
 
-    public override void GetJsonData(ref JsonData jsonData)
+    public override bool GetJsonData(ref JsonData jsonData)
     {
         base.GetJsonData(ref jsonData);
 
@@ -48,6 +48,13 @@ public class CompositeNode : BTreeNode
                 strChildren += ", ";
             }
         }
+
+        if (jsonData.ContainsKey(name))
+        {
+            Debug.LogError($"[ERR]导出失败！！有重名节点:{name}！");
+            return false;
+        }
+
         jsonData[name] = new JsonData(); // name 作为唯一key
         jsonData[name]["type"] = this.GetType().Name;
         jsonData[name]["children"] = new JsonData();
@@ -56,8 +63,12 @@ public class CompositeNode : BTreeNode
         // 填入子节点Json
         foreach (var connection in connections)
         {
-            (connection.node as BTreeNode).GetJsonData(ref jsonData);
+            var succeed = (connection.node as BTreeNode).GetJsonData(ref jsonData);
+            if(!succeed)
+                return false;
         }
+
+        return true;
     }
 
     // 根据坐标重新排子节点的顺序

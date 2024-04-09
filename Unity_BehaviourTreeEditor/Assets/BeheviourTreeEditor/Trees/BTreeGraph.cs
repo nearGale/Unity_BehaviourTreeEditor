@@ -55,8 +55,12 @@ public class BTreeGraph : NodeGraph
     {
         JsonData jsonData = new JsonData();
         var root = GetRootNode();
-        root.GetJsonData(ref jsonData);
+        bool succeed = root.GetJsonData(ref jsonData);
 
+        if (!succeed)
+        {
+            return null;
+        }
 
         var jsonStr = jsonData.ToJson();
 
@@ -71,9 +75,15 @@ public class BTreeGraph : NodeGraph
     [ContextMenu("WriteJson")]
     private void WriteJson()
     {
-        string JsonPath = Application.dataPath + "/userInfo.json";
+        string JsonPath = $"{Application.dataPath}/{name}.json";
 
         var data = GetJsonString();
+        if (string.IsNullOrEmpty(data))
+        {
+            Debug.LogError("行为树json导出失败！！！");
+            return;
+        }
+
         WriteDataToJson(data, JsonPath);
 
         AssetDatabase.Refresh();
@@ -82,5 +92,6 @@ public class BTreeGraph : NodeGraph
     private void WriteDataToJson(string data, string jsonPath)
     {
         System.IO.File.WriteAllText(jsonPath, data);
+        Debug.Log($"导出成功！行为树json路径：{jsonPath}");
     }
 }

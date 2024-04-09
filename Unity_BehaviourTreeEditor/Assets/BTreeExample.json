@@ -6,22 +6,26 @@
     },
     "selA" : {
         "type" : "SelectorNode",
-        "children" : "考虑进来, Condition"
+        "children" : "考虑进来, 判断失败"
     },
     "考虑进来" : {
         "type" : "ActionLog",
         "param" : "考虑考虑"
     },
-    "Condition" : {
-        "type" : "ConditionFalse",
+    "判断失败" : {
+        "type" : "ConditionTrue",
         "param" : ""
     },
-    "Sequence"  : {
+    "Sequence" : {
         "type" : "SequenceNode",
         "children" : "Action, Condition"
     },
-    "Action"    : {
+    "Action"   : {
         "type" : "ActionWait",
         "param" : "10"
+    },
+    "Condition" : {
+        "type" : "ConditionFalse",
+        "param" : ""
     }
 }

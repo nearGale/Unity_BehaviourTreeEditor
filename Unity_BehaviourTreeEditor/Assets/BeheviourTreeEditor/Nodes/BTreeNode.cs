@@ -14,5 +14,5 @@ public class BTreeNode : Node
         Debug.Log(this.GetType().Name);
     }
 
-    public virtual void GetJsonData(ref JsonData jsonData) { }
+    public virtual bool GetJsonData(ref JsonData jsonData) { return false; }
 }

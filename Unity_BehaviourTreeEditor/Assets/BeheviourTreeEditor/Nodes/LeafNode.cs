@@ -16,12 +16,20 @@ public class LeafNode : BTreeNode
         Debug.Log($"{this.GetType().Name} {type}");
     }
 
-    public override void GetJsonData(ref JsonData jsonData)
+    public override bool GetJsonData(ref JsonData jsonData)
     {
         base.GetJsonData(ref jsonData);
+
+        if(jsonData.ContainsKey(name)) 
+        {
+            Debug.LogError($"[ERR]导出失败！！有重名节点:{name}！");
+            return false;
+        }
 
         jsonData[name] = new JsonData(); // name 作为唯一key
         jsonData[name]["type"] = type.ToString();
         jsonData[name]["param"] = param;
+
+        return true;
     }
 }
