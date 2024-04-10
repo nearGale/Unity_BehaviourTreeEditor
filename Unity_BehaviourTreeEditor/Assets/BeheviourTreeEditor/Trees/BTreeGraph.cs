@@ -15,12 +15,6 @@ public class BTreeGraph : NodeGraph
     public string PORT_PARENT_NAME = "parent";
     public string PORT_CHILDREN_NAME = "children";
 
-    public Dictionary<ENodeTypes, string> DictNodeParams = new Dictionary<ENodeTypes, string>()
-    {
-        {ENodeTypes.ActionWait, "seconds(float)" },
-        {ENodeTypes.ActionLog, "content(string),content(string)" },
-    };
-
     /// <summary>
     /// 在节点编辑器中，右键菜单增加功能
     /// </summary>

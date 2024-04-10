@@ -1,31 +1,43 @@
 
 {
-    "根节点" : {
+    "Root" : {
         "type" : "RootNode",
-        "children" : "selA, Sequence"
+        "children" : "A分支, B分支"
     },
-    "selA" : {
-        "type" : "SelectorNode",
-        "children" : "考虑进来, 判断失败"
+    "A分支"  : {
+        "type" : "SequenceNode",
+        "children" : "A-打印0, A-不通过, A-打印1"
     },
-    "考虑进来" : {
+    "A-打印0" : {
         "type" : "ActionLog",
-        "param" : "考虑考虑"
+        "param" : "A0"
     },
-    "判断失败" : {
+    "A-不通过" : {
+        "type" : "ConditionFalse",
+        "param" : null
+    },
+    "A-打印1" : {
+        "type" : "ActionLog",
+        "param" : "A1"
+    },
+    "B分支"   : {
+        "type" : "SequenceNode",
+        "children" : "B-打印0, B-通过, B-等待10秒, B-打印1"
+    },
+    "B-打印0" : {
+        "type" : "ActionLog",
+        "param" : "B0"
+    },
+    "B-通过"  : {
         "type" : "ConditionTrue",
         "param" : ""
     },
-    "Sequence" : {
-        "type" : "SequenceNode",
-        "children" : "Action, Condition"
-    },
-    "Action"   : {
+    "B-等待10秒" : {
         "type" : "ActionWait",
         "param" : "10"
     },
-    "Condition" : {
-        "type" : "ConditionFalse",
-        "param" : ""
+    "B-打印1"   : {
+        "type" : "ActionLog",
+        "param" : "B1"
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 public class LeafNode : BTreeNode
 {
     [Input] public int parent;
-    public ENodeTypes type;
+    public ENodeType type;
     public string param;
 
     public override void Shortcut()

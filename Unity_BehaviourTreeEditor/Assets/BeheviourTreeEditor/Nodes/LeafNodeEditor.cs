@@ -21,8 +21,7 @@ public class LeafNodeEditor : NodeEditor
         NodeEditorGUILayout.PropertyField(serializedObject.FindProperty("parent"));
         NodeEditorGUILayout.PropertyField(serializedObject.FindProperty("type"));
 
-        var bTreeGraph = node.graph as BTreeGraph;
-        if (bTreeGraph.DictNodeParams.TryGetValue(node.type, out var paramStr))
+        if (NodeConfig.DictNodeParams.TryGetValue(node.type, out var paramStr))
         {
             UnityEditor.EditorGUILayout.LabelField("参数格式：" + paramStr);
             NodeEditorGUILayout.PropertyField(serializedObject.FindProperty("param"));
