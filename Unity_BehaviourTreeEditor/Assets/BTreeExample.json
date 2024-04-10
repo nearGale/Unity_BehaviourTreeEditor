@@ -2,33 +2,47 @@
 {
     "Root" : {
         "type" : "RootNode",
-        "children" : "A分支, B分支"
+        "children" : "A分支,B分支"
     },
     "A分支"  : {
         "type" : "SequenceNode",
-        "children" : "A-打印0, A-不通过, A-打印1"
+        "children" : "A-打印0,A-检查取反,A-打印重复,A-不通过"
     },
     "A-打印0" : {
         "type" : "ActionLog",
         "param" : "A0"
     },
-    "A-不通过" : {
-        "type" : "ConditionFalse",
-        "param" : null
+    "A-检查取反" : {
+        "type" : "DecoratorInvert",
+        "children" : "A-不通过1",
+        "param"    : ""
     },
-    "A-打印1" : {
+    "A-不通过1" : {
+        "type" : "ConditionFalse",
+        "param" : ""
+    },
+    "A-打印重复" : {
+        "type" : "DecoratorRepeat",
+        "children" : "A-打印1",
+        "param"    : "10"
+    },
+    "A-打印1"  : {
         "type" : "ActionLog",
         "param" : "A1"
     },
-    "B分支"   : {
-        "type" : "SequenceNode",
-        "children" : "B-打印0, B-通过, B-等待10秒, B-打印1"
+    "A-不通过"  : {
+        "type" : "ConditionFalse",
+        "param" : ""
     },
-    "B-打印0" : {
+    "B分支"    : {
+        "type" : "SequenceNode",
+        "children" : "B-打印0,B-通过,B-等待10秒,B-打印1"
+    },
+    "B-打印0"  : {
         "type" : "ActionLog",
         "param" : "B0"
     },
-    "B-通过"  : {
+    "B-通过"   : {
         "type" : "ConditionTrue",
         "param" : ""
     },

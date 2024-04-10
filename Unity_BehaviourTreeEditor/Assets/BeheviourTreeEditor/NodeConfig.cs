@@ -29,5 +29,6 @@ public static class NodeConfig
     {
         {ENodeType.ActionWait, "seconds(float)" },
         {ENodeType.ActionLog, "content(string)" },
+        {ENodeType.DecoratorRepeat, "times(int)" },
     };
 }

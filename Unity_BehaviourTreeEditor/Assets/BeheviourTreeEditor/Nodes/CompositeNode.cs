@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.MemoryProfiler;
 using UnityEngine;
+using XNode;
 
 /// <summary>
 /// 复合节点
@@ -32,20 +33,19 @@ public class CompositeNode : BTreeNode
     {
         base.GetJsonData(ref jsonData);
 
-        SortChildrenNodes();
+        var sortedConnections = SortChildrenNodes();
 
         var bTreeGraph = graph as BTreeGraph;
         var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
-        var connections = childrenPort.GetConnections();
 
         // 填入自身Json
         var strChildren = "";
-        for (int i = 0; i < connections.Count; i++)
+        for (int i = 0; i < sortedConnections.Count; i++)
         {
-            strChildren += connections[i].node.name;
-            if (i != connections.Count - 1)
+            strChildren += sortedConnections[i].node.name;
+            if (i != sortedConnections.Count - 1)
             {
-                strChildren += ", ";
+                strChildren += ",";
             }
         }
 
@@ -61,7 +61,7 @@ public class CompositeNode : BTreeNode
         jsonData[name]["children"] = strChildren;
 
         // 填入子节点Json
-        foreach (var connection in connections)
+        foreach (var connection in sortedConnections)
         {
             var succeed = (connection.node as BTreeNode).GetJsonData(ref jsonData);
             if(!succeed)
@@ -72,7 +72,7 @@ public class CompositeNode : BTreeNode
     }
 
     // 根据坐标重新排子节点的顺序
-    private void SortChildrenNodes()
+    private List<NodePort> SortChildrenNodes()
     {
         var bTreeGraph = graph as BTreeGraph;
         var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
@@ -82,5 +82,7 @@ public class CompositeNode : BTreeNode
         {
             return x.node.position.y.CompareTo(y.node.position.y);
         });
+
+        return connections;
     }
 }
