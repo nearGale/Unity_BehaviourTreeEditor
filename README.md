@@ -9,6 +9,7 @@ Lit4Unity：https://github.com/XINCGer/LitJson4Unity
 ### 节点
 节点支持 Selector、Sequence、Decorator*、Action*、Condition*
 * 可自定义类型和参数，在 NodeConfig 中声明
+
 NodeConfig 中也支持配置输出路径
 
 ### 使用截图
