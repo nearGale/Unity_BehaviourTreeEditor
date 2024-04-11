@@ -3,33 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateNodeMenu("")] // 隐藏创建菜单显示
-[NodeWidth(300)] // 节点宽度
-public class LeafNode : BTreeNode
+namespace BeheviourTreeEditor
 {
-    [Input] public int parent;
-    public ENodeType type;
-    public string param;
-
-    public override void Shortcut()
+    [CreateNodeMenu("")] // 隐藏创建菜单显示
+    [NodeWidth(300)] // 节点宽度
+    public class LeafNode : BTreeNode
     {
-        Debug.Log($"{this.GetType().Name} {type}");
-    }
+        [Input] public int parent;
+        public ENodeType type;
+        public string param;
 
-    public override bool GetJsonData(ref JsonData jsonData)
-    {
-        base.GetJsonData(ref jsonData);
-
-        if(jsonData.ContainsKey(name)) 
+        public override void Shortcut()
         {
-            Debug.LogError($"[ERR]导出失败！！有重名节点:{name}！");
-            return false;
+            Debug.Log($"{this.GetType().Name} {type}");
         }
 
-        jsonData[name] = new JsonData(); // name 作为唯一key
-        jsonData[name]["type"] = type.ToString();
-        jsonData[name]["param"] = param;
+        public override bool GetJsonData(ref JsonData jsonData)
+        {
+            base.GetJsonData(ref jsonData);
 
-        return true;
+            if (jsonData.ContainsKey(name))
+            {
+                Debug.LogError($"[ERR]导出失败！！有重名节点:{name}！");
+                return false;
+            }
+
+            jsonData[name] = new JsonData(); // name 作为唯一key
+            jsonData[name]["type"] = type.ToString();
+            jsonData[name]["param"] = param;
+
+            return true;
+        }
     }
 }

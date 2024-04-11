@@ -8,84 +8,87 @@ using UnityEngine;
 using UnityEngine.Windows;
 using XNode;
 
-[CreateAssetMenu]
-public class BTreeGraph : NodeGraph 
+namespace BeheviourTreeEditor
 {
-    public string ROOT_NODE_NAME = "Root";
-    public string PORT_PARENT_NAME = "parent";
-    public string PORT_CHILDREN_NAME = "children";
-
-    /// <summary>
-    /// 在节点编辑器中，右键菜单增加功能
-    /// </summary>
-    [ContextMenu("Do Something")]
-    void DoSomething()
+    [CreateAssetMenu]
+    public class BTreeGraph : NodeGraph
     {
-        Debug.Log("Perform operation");
-    }
+        public string ROOT_NODE_NAME = "Root";
+        public string PORT_PARENT_NAME = "parent";
+        public string PORT_CHILDREN_NAME = "children";
 
-    private BTreeNode GetRootNode()
-    {
-        for (int i = 0; i < nodes.Count; i++)
+        /// <summary>
+        /// 在节点编辑器中，右键菜单增加功能
+        /// </summary>
+        [ContextMenu("Do Something")]
+        void DoSomething()
         {
-            // 要求全场只有一个NodeRoot
-            if (nodes[i] is RootNode) return nodes[i] as BTreeNode;
+            Debug.Log("Perform operation");
         }
-        return null;
-    }
 
-
-    [ContextMenu("Shortcut")]
-    private void Shortcut()
-    {
-        var root = GetRootNode();
-        Debug.Log(root.name);
-
-        root.Shortcut();
-    }
-
-    [ContextMenu("GetJsonString")]
-    private string GetJsonString()
-    {
-        JsonData jsonData = new JsonData();
-        var root = GetRootNode();
-        bool succeed = root.GetJsonData(ref jsonData);
-
-        if (!succeed)
+        private BTreeNode GetRootNode()
         {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                // 要求全场只有一个NodeRoot
+                if (nodes[i] is RootNode) return nodes[i] as BTreeNode;
+            }
             return null;
         }
 
-        var jsonStr = jsonData.ToJson();
 
-        // 将中文的unicode转成能识别的GBK编码
-        Regex reg = new Regex(@"(?i)\\[uU]([0-9a-f]{4})");
-        jsonStr = reg.Replace(jsonStr, delegate (Match m) { return ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString(); });
-
-        Debug.Log(jsonStr);
-        return jsonStr;
-    }
-
-    [ContextMenu("WriteJson")]
-    private void WriteJson()
-    {
-        string JsonPath = NodeConfig.OutputPath + $"{name}.json";
-
-        var data = GetJsonString();
-        if (string.IsNullOrEmpty(data))
+        [ContextMenu("Shortcut")]
+        private void Shortcut()
         {
-            Debug.LogError("行为树json导出失败！！！");
-            return;
+            var root = GetRootNode();
+            Debug.Log(root.name);
+
+            root.Shortcut();
         }
 
-        WriteDataToJson(data, JsonPath);
+        [ContextMenu("GetJsonString")]
+        private string GetJsonString()
+        {
+            JsonData jsonData = new JsonData();
+            var root = GetRootNode();
+            bool succeed = root.GetJsonData(ref jsonData);
 
-        AssetDatabase.Refresh();
-    }
+            if (!succeed)
+            {
+                return null;
+            }
 
-    private void WriteDataToJson(string data, string jsonPath)
-    {
-        System.IO.File.WriteAllText(jsonPath, data);
-        Debug.Log($"导出成功！行为树json路径：{jsonPath}");
+            var jsonStr = jsonData.ToJson();
+
+            // 将中文的unicode转成能识别的GBK编码
+            Regex reg = new Regex(@"(?i)\\[uU]([0-9a-f]{4})");
+            jsonStr = reg.Replace(jsonStr, delegate (Match m) { return ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString(); });
+
+            Debug.Log(jsonStr);
+            return jsonStr;
+        }
+
+        [ContextMenu("WriteJson")]
+        private void WriteJson()
+        {
+            string JsonPath = NodeConfig.OutputPath + $"{name}.json";
+
+            var data = GetJsonString();
+            if (string.IsNullOrEmpty(data))
+            {
+                Debug.LogError("行为树json导出失败！！！");
+                return;
+            }
+
+            WriteDataToJson(data, JsonPath);
+
+            AssetDatabase.Refresh();
+        }
+
+        private void WriteDataToJson(string data, string jsonPath)
+        {
+            System.IO.File.WriteAllText(jsonPath, data);
+            Debug.Log($"导出成功！行为树json路径：{jsonPath}");
+        }
     }
 }

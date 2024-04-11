@@ -8,20 +8,19 @@ namespace BeheviourTreeEditor
     /// <summary>
     /// 节点个性化显示的【节点编辑器】
     /// </summary>
-    [CustomNodeEditor(typeof(DecoratorNode))]
-    public class DecoratorNodeEditor : NodeEditor
+    [CustomNodeEditor(typeof(LeafNode))]
+    public class LeafNodeEditor : NodeEditor
     {
-        private DecoratorNode node;
+        private LeafNode node;
 
         public override void OnBodyGUI()
         {
-            if (node == null) node = target as DecoratorNode;
+            if (node == null) node = target as LeafNode;
 
             // Update serialized object's representation
             serializedObject.Update();
 
             NodeEditorGUILayout.PropertyField(serializedObject.FindProperty("parent"));
-            NodeEditorGUILayout.PropertyField(serializedObject.FindProperty("child"));
             NodeEditorGUILayout.PropertyField(serializedObject.FindProperty("type"));
 
             if (NodeConfig.DictNodeParams.TryGetValue(node.type, out var paramStr))

@@ -5,84 +5,87 @@ using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using XNode;
 
-/// <summary>
-/// 复合节点
-/// </summary>
-[CreateNodeMenu("")] // 隐藏创建菜单显示
-public class CompositeNode : BTreeNode
+namespace BeheviourTreeEditor
 {
-    [Output] public int children;
-
-    public override void Shortcut()
+    /// <summary>
+    /// 复合节点
+    /// </summary>
+    [CreateNodeMenu("")] // 隐藏创建菜单显示
+    public class CompositeNode : BTreeNode
     {
-        SortChildrenNodes();
+        [Output] public int children;
 
-        base.Shortcut();
-
-        var bTreeGraph = graph as BTreeGraph;
-        var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
-        var connections = childrenPort.GetConnections();
-
-        foreach (var connection in connections)
+        public override void Shortcut()
         {
-            (connection.node as BTreeNode).Shortcut();
-        }
-    }
+            SortChildrenNodes();
 
-    public override bool GetJsonData(ref JsonData jsonData)
-    {
-        base.GetJsonData(ref jsonData);
+            base.Shortcut();
 
-        var sortedConnections = SortChildrenNodes();
+            var bTreeGraph = graph as BTreeGraph;
+            var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
+            var connections = childrenPort.GetConnections();
 
-        var bTreeGraph = graph as BTreeGraph;
-        var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
-
-        // 填入自身Json
-        var strChildren = "";
-        for (int i = 0; i < sortedConnections.Count; i++)
-        {
-            strChildren += sortedConnections[i].node.name;
-            if (i != sortedConnections.Count - 1)
+            foreach (var connection in connections)
             {
-                strChildren += ",";
+                (connection.node as BTreeNode).Shortcut();
             }
         }
 
-        if (jsonData.ContainsKey(name))
+        public override bool GetJsonData(ref JsonData jsonData)
         {
-            Debug.LogError($"[ERR]导出失败！！有重名节点:{name}！");
-            return false;
-        }
+            base.GetJsonData(ref jsonData);
 
-        jsonData[name] = new JsonData(); // name 作为唯一key
-        jsonData[name]["type"] = this.GetType().Name;
-        jsonData[name]["children"] = new JsonData();
-        jsonData[name]["children"] = strChildren;
+            var sortedConnections = SortChildrenNodes();
 
-        // 填入子节点Json
-        foreach (var connection in sortedConnections)
-        {
-            var succeed = (connection.node as BTreeNode).GetJsonData(ref jsonData);
-            if(!succeed)
+            var bTreeGraph = graph as BTreeGraph;
+            var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
+
+            // 填入自身Json
+            var strChildren = "";
+            for (int i = 0; i < sortedConnections.Count; i++)
+            {
+                strChildren += sortedConnections[i].node.name;
+                if (i != sortedConnections.Count - 1)
+                {
+                    strChildren += ",";
+                }
+            }
+
+            if (jsonData.ContainsKey(name))
+            {
+                Debug.LogError($"[ERR]导出失败！！有重名节点:{name}！");
                 return false;
+            }
+
+            jsonData[name] = new JsonData(); // name 作为唯一key
+            jsonData[name]["type"] = this.GetType().Name;
+            jsonData[name]["children"] = new JsonData();
+            jsonData[name]["children"] = strChildren;
+
+            // 填入子节点Json
+            foreach (var connection in sortedConnections)
+            {
+                var succeed = (connection.node as BTreeNode).GetJsonData(ref jsonData);
+                if (!succeed)
+                    return false;
+            }
+
+            return true;
         }
 
-        return true;
-    }
-
-    // 根据坐标重新排子节点的顺序
-    private List<NodePort> SortChildrenNodes()
-    {
-        var bTreeGraph = graph as BTreeGraph;
-        var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
-
-        var connections = childrenPort.GetConnections();
-        connections.Sort((x, y) =>
+        // 根据坐标重新排子节点的顺序
+        private List<NodePort> SortChildrenNodes()
         {
-            return x.node.position.y.CompareTo(y.node.position.y);
-        });
+            var bTreeGraph = graph as BTreeGraph;
+            var childrenPort = GetOutputPort(bTreeGraph.PORT_CHILDREN_NAME);
 
-        return connections;
+            var connections = childrenPort.GetConnections();
+            connections.Sort((x, y) =>
+            {
+                return x.node.position.y.CompareTo(y.node.position.y);
+            });
+
+            return connections;
+        }
     }
 }
