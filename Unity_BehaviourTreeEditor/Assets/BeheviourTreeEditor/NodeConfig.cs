@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using UnityEngine;
 
 /// <summary>
 /// 节点细分类型
 /// Selctor、Sequence仅有一个类型，不加入枚举了
-/// TODO：可扩展带记忆类型的复合节点
 /// </summary>
 public enum ENodeType
 {
@@ -31,4 +31,7 @@ public static class NodeConfig
         {ENodeType.ActionLog, "content(string)" },
         {ENodeType.DecoratorRepeat, "times(int)" },
     };
+
+    public static string OutputPath = $"{Application.dataPath}/";
+    //public static string OutputPath = "D:/BTrees/"; // 需要存在这个路径
 }

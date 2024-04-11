@@ -69,7 +69,7 @@ public class BTreeGraph : NodeGraph
     [ContextMenu("WriteJson")]
     private void WriteJson()
     {
-        string JsonPath = $"{Application.dataPath}/{name}.json";
+        string JsonPath = NodeConfig.OutputPath + $"{name}.json";
 
         var data = GetJsonString();
         if (string.IsNullOrEmpty(data))
